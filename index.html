@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI Infrastructure: On-Premises Nvidia GPU vs AWS / Azure Cloud — architecture comparison, services, and decision guide.">
+<title>AI Infrastructure: On-Premises vs Cloud</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">AI<span>Infra</span> Guide</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="scrollToSection('#overview')">Overview</button>
+    <button class="nav-tab" onclick="scrollToSection('#architecture')">Architecture</button>
+    <button class="nav-tab" onclick="scrollToSection('#services')">Services</button>
+    <button class="nav-tab" onclick="scrollToSection('#comparison')">Compare</button>
+    <button class="nav-tab" onclick="scrollToSection('#decision')">When to Use</button>
+  </div>
+  <div class="nav-right">
+    <div class="nav-tags">
+      <span class="tag tag-on">On-Prem · Nvidia</span>
+      <span class="tag tag-cloud">AWS · Azure</span>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">
+      <span class="icon-sun">&#9788;</span>
+      <span class="icon-moon">&#9790;</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="overview">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">AI Infrastructure Deep Dive · 2026</div>
+    <h1>How AI Services Work<br>Across Deployment Models</h1>
+    <div class="hero-vs">
+      <div class="hero-pill pill-on">🖥 On-Premises · Nvidia GPU</div>
+      <div class="vs-badge">vs</div>
+      <div class="hero-pill pill-cloud">☁ AWS · Azure Cloud</div>
+    </div>
+    <p class="hero-sub">A complete architectural breakdown of how AI workloads — from training to inference — operate across on-premises Nvidia GPU clusters and managed cloud platforms like AWS and Azure.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#architecture" onclick="event.preventDefault();scrollToSection('#architecture')">Explore Architecture</a>
+      <a class="btn btn-outline" href="#comparison" onclick="event.preventDefault();scrollToSection('#comparison')">See Comparison Table</a>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll to explore</div>
+</section>
+
+<!-- ARCHITECTURE LAYERS COMPARE -->
+<section class="section" id="arch-compare">
+  <div class="section-label">Architecture · Layer by Layer</div>
+  <div class="section-title">The Full AI Stack</div>
+  <p class="section-desc">Every AI service is built on a stack of interconnected layers. Here's how those layers differ between running your own hardware and using a managed cloud.</p>
+
+  <div class="compare-grid" id="compare-cols">
+    <!-- ON-PREM -->
+    <div class="compare-col">
+      <div class="col-header">
+        <div class="col-icon icon-on">🖥</div>
+        <div>
+          <div class="col-title">On-Premises · Nvidia GPU</div>
+          <div class="col-sub">Self-managed · Full control · Capital expenditure</div>
+        </div>
+      </div>
+      <div class="layer-stack">
+        <div class="layer layer-on">
+          <div class="layer-name">Hardware Layer</div>
+          <div class="layer-desc">Physical Nvidia GPUs (H100, A100, RTX 4090) installed in bare-metal servers. NVLink/NVSwitch for multi-GPU communication. InfiniBand or 400GbE networking.</div>
+          <div class="layer-tech">
+            <span class="chip chip-green">H100 SXM5</span>
+            <span class="chip chip-green">A100 80GB</span>
+            <span class="chip chip-green">NVLink 4.0</span>
+            <span class="chip chip-green">InfiniBand HDR</span>
+          </div>
+        </div>
+        <div class="layer layer-on">
+          <div class="layer-name">Driver &amp; CUDA Layer</div>
+          <div class="layer-desc">Nvidia drivers, CUDA toolkit, cuDNN libraries. Low-level GPU kernel access. Direct hardware utilization, no virtualization overhead.</div>
+          <div class="layer-tech">
+            <span class="chip chip-green">CUDA 12.x</span>
+            <span class="chip chip-green">cuDNN 9</span>
+            <span class="chip chip-blue">NCCL</span>
+            <span class="chip chip-blue">Triton</span>
+          </div>
+        </div>
+        <div class="layer layer-on">
+          <div class="layer-name">Container &amp; Orchestration</div>
+          <div class="layer-desc">Kubernetes with Nvidia GPU Operator. Docker containers with GPU passthrough. Job scheduling via SLURM or Kubeflow Pipelines.</div>
+          <div class="layer-tech">
+            <span class="chip chip-blue">Kubernetes</span>
+            <span class="chip chip-blue">SLURM</span>
+            <span class="chip chip-green">GPU Operator</span>
+            <span class="chip chip-orange">Kubeflow</span>
+          </div>
+        </div>
+        <div class="layer layer-on">
+          <div class="layer-name">AI Framework Layer</div>
+          <div class="layer-desc">PyTorch / TensorFlow with CUDA backend. Hugging Face Transformers. Distributed training via DeepSpeed, FSDP, or Megatron-LM.</div>
+          <div class="layer-tech">
+            <span class="chip chip-orange">PyTorch</span>
+            <span class="chip chip-orange">DeepSpeed</span>
+            <span class="chip chip-blue">FSDP</span>
+            <span class="chip chip-blue">Megatron</span>
+          </div>
+        </div>
+        <div class="layer layer-on">
+          <div class="layer-name">Model Serving Layer</div>
+          <div class="layer-desc">Nvidia Triton Inference Server, vLLM, TGI (Text Generation Inference). Custom REST/gRPC APIs. TensorRT for optimization.</div>
+          <div class="layer-tech">
+            <span class="chip chip-green">Triton</span>
+            <span class="chip chip-green">vLLM</span>
+            <span class="chip chip-blue">TensorRT</span>
+            <span class="chip chip-pink">TGI</span>
+          </div>
+        </div>
+        <div class="layer layer-on">
+          <div class="layer-name">Storage Layer</div>
+          <div class="layer-desc">High-speed NVMe SSDs, RAID arrays, or parallel file systems like Lustre/GPFS. Object storage via MinIO. NFS/S3-compatible access patterns.</div>
+          <div class="layer-tech">
+            <span class="chip chip-orange">NVMe RAID</span>
+            <span class="chip chip-blue">Lustre</span>
+            <span class="chip chip-green">MinIO</span>
+          </div>
+        </div>
+        <div class="layer layer-on">
+          <div class="layer-name">Monitoring &amp; MLOps</div>
+          <div class="layer-desc">Prometheus + Grafana for GPU metrics. MLflow or Weights &amp; Biases for experiment tracking. Dcgm-exporter for Nvidia metrics.</div>
+          <div class="layer-tech">
+            <span class="chip chip-blue">Prometheus</span>
+            <span class="chip chip-pink">W&amp;B</span>
+            <span class="chip chip-orange">MLflow</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLOUD -->
+    <div class="compare-col">
+      <div class="col-header">
+        <div class="col-icon icon-cloud">☁</div>
+        <div>
+          <div class="col-title">AWS · Azure Cloud</div>
+          <div class="col-sub">Managed services · Elastic scale · Operational expenditure</div>
+        </div>
+      </div>
+      <div class="layer-stack">
+        <div class="layer layer-cloud">
+          <div class="layer-name">Hardware Layer (Abstracted)</div>
+          <div class="layer-desc">Cloud-managed Nvidia A100/H100 instances (AWS p4d/p5, Azure NDv5). Also custom silicon: AWS Trainium2, Inferentia2; Azure Maia 100 chips.</div>
+          <div class="layer-tech">
+            <span class="chip chip-purple">p5.48xlarge</span>
+            <span class="chip chip-purple">NDv5 H100</span>
+            <span class="chip chip-blue">Trainium2</span>
+            <span class="chip chip-blue">Maia 100</span>
+          </div>
+        </div>
+        <div class="layer layer-cloud">
+          <div class="layer-name">Managed Runtime</div>
+          <div class="layer-desc">Pre-installed GPU drivers, CUDA, and deep learning AMIs. AWS Deep Learning Containers, Azure ML environments. Zero driver management.</div>
+          <div class="layer-tech">
+            <span class="chip chip-purple">DL AMIs</span>
+            <span class="chip chip-purple">DLAMI</span>
+            <span class="chip chip-blue">Azure ML Env</span>
+            <span class="chip chip-green">CUDA pre-built</span>
+          </div>
+        </div>
+        <div class="layer layer-cloud">
+          <div class="layer-name">Orchestration &amp; Compute</div>
+          <div class="layer-desc">Amazon EKS/ECS for containers, AWS Batch for jobs, Azure AKS + Azure ML Compute Clusters. Auto-scaling, spot instances for cost savings.</div>
+          <div class="layer-tech">
+            <span class="chip chip-purple">Amazon EKS</span>
+            <span class="chip chip-purple">AWS Batch</span>
+            <span class="chip chip-blue">Azure AKS</span>
+            <span class="chip chip-orange">Spot/Preempt</span>
+          </div>
+        </div>
+        <div class="layer layer-cloud">
+          <div class="layer-name">Managed Training Layer</div>
+          <div class="layer-desc">Amazon SageMaker Training Jobs, Azure ML Training Runs. Distributed training with Horovod integration. Automatic hyperparameter tuning.</div>
+          <div class="layer-tech">
+            <span class="chip chip-purple">SageMaker</span>
+            <span class="chip chip-blue">Azure ML</span>
+            <span class="chip chip-orange">Horovod</span>
+            <span class="chip chip-pink">AutoML</span>
+          </div>
+        </div>
+        <div class="layer layer-cloud">
+          <div class="layer-name">Inference &amp; Endpoints</div>
+          <div class="layer-desc">SageMaker Real-time / Serverless Endpoints, AWS Bedrock APIs, Azure OpenAI Service, Azure ML Online Endpoints. Traffic splitting, A/B testing.</div>
+          <div class="layer-tech">
+            <span class="chip chip-purple">Bedrock</span>
+            <span class="chip chip-blue">Azure OpenAI</span>
+            <span class="chip chip-purple">SM Endpoints</span>
+            <span class="chip chip-blue">ML Endpoints</span>
+          </div>
+        </div>
+        <div class="layer layer-cloud">
+          <div class="layer-name">Storage Layer</div>
+          <div class="layer-desc">Amazon S3 / EFS / FSx for Lustre (high-perf training data). Azure Blob Storage / Azure Files / ANF (Azure NetApp Files) for large datasets.</div>
+          <div class="layer-tech">
+            <span class="chip chip-purple">S3 / FSx</span>
+            <span class="chip chip-blue">Blob / ANF</span>
+            <span class="chip chip-green">EFS</span>
+          </div>
+        </div>
+        <div class="layer layer-cloud">
+          <div class="layer-name">Managed MLOps</div>
+          <div class="layer-desc">SageMaker MLflow, Model Registry, Pipelines. Azure ML Experiments, Model Registry, Designer. Built-in CI/CD for model promotion and versioning.</div>
+          <div class="layer-tech">
+            <span class="chip chip-purple">SM Pipelines</span>
+            <span class="chip chip-blue">Azure ML</span>
+            <span class="chip chip-orange">Model Registry</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE DIAGRAMS -->
+<section class="arch-section" id="architecture">
+  <div class="arch-inner">
+    <div class="section-label">System Architecture</div>
+    <div class="section-title">Request Flow Diagrams</div>
+    <p class="section-desc">Trace exactly how a user's inference request flows through each architecture — from client to GPU and back.</p>
+    <div class="arch-tabs">
+      <button class="arch-tab active-on" id="tab-on" onclick="showArch('on')">🖥 On-Premises Flow</button>
+      <button class="arch-tab" id="tab-cloud" onclick="showArch('cloud')">☁ Cloud Flow</button>
+    </div>
+    <div class="arch-diagram">
+      <!-- ON-PREM DIAGRAM -->
+      <div id="arch-on" class="tab-panel active">
+        <div class="arch-canvas">
+          <div class="dfa-title">On-Premises · Nvidia GPU Cluster · Inference Request Flow</div>
+          <div class="flow-diagram">
+            <div class="flow-row">
+              <div class="flow-node fn-blue visible" style="transition-delay:0.1s">
+                <div class="flow-node-title">Client App</div>
+                <div class="flow-node-sub">REST / gRPC call</div>
+              </div>
+              <div class="arrow-h"></div>
+              <div class="flow-node fn-orange visible" style="transition-delay:0.2s">
+                <div class="flow-node-title">Load Balancer</div>
+                <div class="flow-node-sub">HAProxy / Nginx</div>
+              </div>
+              <div class="arrow-h"></div>
+              <div class="flow-node fn-green visible" style="transition-delay:0.3s">
+                <div class="flow-node-title">API Gateway</div>
+                <div class="flow-node-sub">Auth + Rate limit</div>
+              </div>
+            </div>
+            <div class="arrow-down"></div>
+            <div class="flow-row">
+              <div class="flow-group" style="flex:1;max-width:700px">
+                <div class="flow-group-label">Kubernetes Cluster · GPU Operator</div>
+                <div class="flow-group-inner">
+                  <div class="flow-node fn-blue visible" style="transition-delay:0.4s">
+                    <div class="flow-node-title">Triton Server</div>
+                    <div class="flow-node-sub">Inference Server Pod</div>
+                  </div>
+                  <div class="arrow-h"></div>
+                  <div class="flow-node fn-green visible" style="transition-delay:0.5s">
+                    <div class="flow-node-title">Model Scheduler</div>
+                    <div class="flow-node-sub">Dynamic batching</div>
+                  </div>
+                  <div class="arrow-h"></div>
+                  <div class="flow-node fn-green visible" style="transition-delay:0.6s">
+                    <div class="flow-node-title">vLLM Engine</div>
+                    <div class="flow-node-sub">PagedAttention</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="arrow-down"></div>
+            <div class="flow-row">
+              <div class="flow-group" style="flex:1;max-width:700px">
+                <div class="flow-group-label">Nvidia GPU Hardware · NVLink Fabric</div>
+                <div class="flow-group-inner">
+                  <div class="flow-node fn-green visible" style="transition-delay:0.7s;min-width:120px">
+                    <div class="flow-node-title">GPU 0 · H100</div>
+                    <div class="flow-node-sub">80GB HBM3</div>
+                  </div>
+                  <div class="arrow-h"></div>
+                  <div class="flow-node fn-green visible" style="transition-delay:0.75s;min-width:120px">
+                    <div class="flow-node-title">GPU 1 · H100</div>
+                    <div class="flow-node-sub">Tensor parallel</div>
+                  </div>
+                  <div class="arrow-h"></div>
+                  <div class="flow-node fn-green visible" style="transition-delay:0.8s;min-width:120px">
+                    <div class="flow-node-title">GPU 2 · H100</div>
+                    <div class="flow-node-sub">Pipeline shard</div>
+                  </div>
+                  <div class="arrow-h"></div>
+                  <div class="flow-node fn-green visible" style="transition-delay:0.85s;min-width:120px">
+                    <div class="flow-node-title">GPU 3 · H100</div>
+                    <div class="flow-node-sub">Data parallel</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="arrow-down"></div>
+            <div class="flow-row">
+              <div class="flow-node fn-pink visible" style="transition-delay:0.9s">
+                <div class="flow-node-title">NVMe Storage</div>
+                <div class="flow-node-sub">Model weights</div>
+              </div>
+              <div class="arrow-h"></div>
+              <div class="flow-node fn-blue visible" style="transition-delay:0.95s">
+                <div class="flow-node-title">KV Cache</div>
+                <div class="flow-node-sub">GPU + CPU mem</div>
+              </div>
+              <div class="arrow-h"></div>
+              <div class="flow-node fn-orange visible" style="transition-delay:1.0s">
+                <div class="flow-node-title">Prometheus</div>
+                <div class="flow-node-sub">GPU metrics</div>
+              </div>
+            </div>
+          </div>
+          <!-- Live pipeline animation -->
+          <div style="margin-top:2rem">
+            <div class="dfa-title">Live Data Pipeline · On-Premises</div>
+            <div class="node-row">
+              <div class="active-dot dot-green"></div>
+              <div class="mini-node mn-green">Input Tokenizer</div>
+              <div style="flex:1">
+                <div class="pipe-line"><div class="pipe-fill pipe-green" style="animation-delay:0s"></div></div>
+              </div>
+              <div class="mini-node mn-blue">CUDA Kernel</div>
+              <div style="flex:1">
+                <div class="pipe-line"><div class="pipe-fill pipe-green" style="animation-delay:0.3s"></div></div>
+              </div>
+              <div class="mini-node mn-green">H100 Compute</div>
+            </div>
+            <div style="height:8px"></div>
+            <div class="node-row">
+              <div class="active-dot dot-green"></div>
+              <div class="mini-node mn-orange">NVMe Load</div>
+              <div style="flex:1">
+                <div class="pipe-line"><div class="pipe-fill pipe-green" style="animation-delay:0.6s"></div></div>
+              </div>
+              <div class="mini-node mn-green">NVLink xfer</div>
+              <div style="flex:1">
+                <div class="pipe-line"><div class="pipe-fill pipe-green" style="animation-delay:0.9s"></div></div>
+              </div>
+              <div class="mini-node mn-blue">Detokenizer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLOUD DIAGRAM -->
+      <div id="arch-cloud" class="tab-panel">
+        <div class="arch-canvas">
+          <div class="dfa-title">AWS / Azure Cloud · Managed AI · Inference Request Flow</div>
+          <div class="flow-diagram">
+            <div class="flow-row">
+              <div class="flow-node fn-blue visible">
+                <div class="flow-node-title">Client App</div>
+                <div class="flow-node-sub">HTTPS request</div>
+              </div>
+              <div class="arrow-h"></div>
+              <div class="flow-node fn-purple visible" style="transition-delay:0.1s">
+                <div class="flow-node-title">API Gateway</div>
+                <div class="flow-node-sub">AWS / Azure APIM</div>
+              </div>
+              <div class="arrow-h"></div>
+              <div class="flow-node fn-blue visible" style="transition-delay:0.2s">
+                <div class="flow-node-title">IAM / Entra ID</div>
+                <div class="flow-node-sub">Auth + policies</div>
+              </div>
+            </div>
+            <div class="arrow-down"></div>
+            <div class="flow-row" style="gap:12px;flex-wrap:wrap;justify-content:center">
+              <div class="flow-node fn-purple visible" style="transition-delay:0.3s">
+                <div class="flow-node-title">AWS Bedrock</div>
+                <div class="flow-node-sub">Foundation models</div>
+              </div>
+              <div style="display:flex;align-items:center;color:var(--muted);font-size:0.75rem;padding:0 4px">or</div>
+              <div class="flow-node fn-blue visible" style="transition-delay:0.35s">
+                <div class="flow-node-title">Azure OpenAI</div>
+                <div class="flow-node-sub">GPT-4 / DALL-E</div>
+              </div>
+              <div style="display:flex;align-items:center;color:var(--muted);font-size:0.75rem;padding:0 4px">or</div>
+              <div class="flow-node fn-purple visible" style="transition-delay:0.4s">
+                <div class="flow-node-title">SageMaker EP</div>
+                <div class="flow-node-sub">Custom model</div>
+              </div>
+            </div>
+            <div class="arrow-down"></div>
+            <div class="flow-row">
+              <div class="flow-group" style="flex:1;max-width:720px">
+                <div class="flow-group-label">Managed Compute Cluster · Auto-scaled</div>
+                <div class="flow-group-inner">
+                  <div class="flow-node fn-purple visible" style="transition-delay:0.5s;min-width:120px">
+                    <div class="flow-node-title">p5.48xlarge</div>
+                    <div class="flow-node-sub">8× H100 SXM</div>
+                  </div>
+                  <div class="arrow-h"></div>
+                  <div class="flow-node fn-blue visible" style="transition-delay:0.55s;min-width:120px">
+                    <div class="flow-node-title">NDv5 H100</div>
+                    <div class="flow-node-sub">InfiniBand</div>
+                  </div>
+                  <div class="arrow-h"></div>
+                  <div class="flow-node fn-purple visible" style="transition-delay:0.6s;min-width:120px">
+                    <div class="flow-node-title">Inferentia2</div>
+                    <div class="flow-node-sub">AWS custom chip</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="arrow-down"></div>
+            <div class="flow-row">
+              <div class="flow-node fn-pink visible" style="transition-delay:0.7s">
+                <div class="flow-node-title">S3 / Blob</div>
+                <div class="flow-node-sub">Model artifacts</div>
+              </div>
+              <div class="arrow-h"></div>
+              <div class="flow-node fn-blue visible" style="transition-delay:0.75s">
+                <div class="flow-node-title">CloudWatch</div>
+                <div class="flow-node-sub">Logs + metrics</div>
+              </div>
+              <div class="arrow-h"></div>
+              <div class="flow-node fn-purple visible" style="transition-delay:0.8s">
+                <div class="flow-node-title">Auto Scaler</div>
+                <div class="flow-node-sub">Target tracking</div>
+              </div>
+              <div class="arrow-h"></div>
+              <div class="flow-node fn-orange visible" style="transition-delay:0.85s">
+                <div class="flow-node-title">Cost Explorer</div>
+                <div class="flow-node-sub">Billing + budgets</div>
+              </div>
+            </div>
+          </div>
+          <!-- Live pipeline animation cloud -->
+          <div style="margin-top:2rem">
+            <div class="dfa-title">Live Data Pipeline · Cloud</div>
+            <div class="node-row">
+              <div class="active-dot dot-purple"></div>
+              <div class="mini-node mn-purple">API Gateway</div>
+              <div style="flex:1">
+                <div class="pipe-line"><div class="pipe-fill pipe-purple" style="animation-delay:0s"></div></div>
+              </div>
+              <div class="mini-node mn-blue">IAM Auth</div>
+              <div style="flex:1">
+                <div class="pipe-line"><div class="pipe-fill pipe-blue" style="animation-delay:0.4s"></div></div>
+              </div>
+              <div class="mini-node mn-purple">Bedrock / OpenAI</div>
+            </div>
+            <div style="height:8px"></div>
+            <div class="node-row">
+              <div class="active-dot dot-purple"></div>
+              <div class="mini-node mn-blue">S3 Weights</div>
+              <div style="flex:1">
+                <div class="pipe-line"><div class="pipe-fill pipe-purple" style="animation-delay:0.8s"></div></div>
+              </div>
+              <div class="mini-node mn-purple">H100 Compute</div>
+              <div style="flex:1">
+                <div class="pipe-line"><div class="pipe-fill pipe-blue" style="animation-delay:1.2s"></div></div>
+              </div>
+              <div class="mini-node mn-blue">CloudWatch</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI SERVICES BREAKDOWN -->
+<section class="section" id="services">
+  <div class="section-label">Services Catalogue</div>
+  <div class="section-title">Key AI Services &amp; Tools</div>
+  <p class="section-desc">The specific services, frameworks and APIs that power each deployment model.</p>
+
+  <div class="services-sep">
+    <span class="tag tag-on">On-Premises</span>
+    <span class="services-sep-text">services below</span>
+  </div>
+  <div class="services-grid" id="onprem-services">
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-on">⚡</div>
+        <div>
+          <div class="sc-title">Nvidia Triton Inference Server</div>
+          <div class="sc-provider">nvidia.com · open source</div>
+        </div>
+      </div>
+      <div class="sc-desc">Production-grade inference serving for multiple frameworks. Supports dynamic batching, model ensembles, and concurrent model execution across multiple GPUs.</div>
+      <ul class="sc-features">
+        <li>Multi-framework: TensorRT, ONNX, PyTorch, TF, OpenVINO</li>
+        <li>Dynamic batching up to 1024 concurrent requests</li>
+        <li>gRPC + HTTP/REST + CUDA shared memory</li>
+        <li>Model analyzer for automatic optimization</li>
+        <li>Perf analyzer for benchmarking latency/throughput</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-on">🔥</div>
+        <div>
+          <div class="sc-title">vLLM · PagedAttention</div>
+          <div class="sc-provider">vllm-project · open source</div>
+        </div>
+      </div>
+      <div class="sc-desc">State-of-the-art LLM serving with PagedAttention for near-zero KV cache waste. Achieves up to 24× higher throughput vs naive HuggingFace serving.</div>
+      <ul class="sc-features">
+        <li>PagedAttention: GPU memory as virtual pages</li>
+        <li>Continuous batching for maximum GPU utilization</li>
+        <li>OpenAI-compatible API endpoint</li>
+        <li>Speculative decoding for low-latency generation</li>
+        <li>Chunked prefill for long-context models</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-on">🚀</div>
+        <div>
+          <div class="sc-title">DeepSpeed · ZeRO</div>
+          <div class="sc-provider">microsoft · open source</div>
+        </div>
+      </div>
+      <div class="sc-desc">Distributed training optimization. ZeRO (Zero Redundancy Optimizer) eliminates memory redundancies in data parallel training, enabling trillion-parameter models.</div>
+      <ul class="sc-features">
+        <li>ZeRO-3: partition optimizer states, gradients, params</li>
+        <li>ZeRO-Infinity: NVMe offloading for huge models</li>
+        <li>Pipeline parallelism with micro-batching</li>
+        <li>Mixture of Experts (MoE) support</li>
+        <li>Kernel injection for Transformers acceleration</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-on">⚙️</div>
+        <div>
+          <div class="sc-title">TensorRT · LLM</div>
+          <div class="sc-provider">nvidia · proprietary</div>
+        </div>
+      </div>
+      <div class="sc-desc">Nvidia's inference optimizer and runtime engine. TensorRT-LLM provides hand-tuned CUDA kernels for LLMs with dramatic latency and throughput improvements.</div>
+      <ul class="sc-features">
+        <li>Layer fusion, kernel auto-tuning, quantization</li>
+        <li>INT8 / FP8 / AWQ / GPTQ quantization</li>
+        <li>Inflight batching for real-time inference</li>
+        <li>KV cache reuse across requests</li>
+        <li>Multi-GPU tensor parallelism out of box</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-on">📊</div>
+        <div>
+          <div class="sc-title">Nvidia NEMO Framework</div>
+          <div class="sc-provider">nvidia · apache 2.0</div>
+        </div>
+      </div>
+      <div class="sc-desc">End-to-end framework for training, fine-tuning, and aligning LLMs, speech, and vision models. Built on PyTorch Lightning with Megatron-Core integration.</div>
+      <ul class="sc-features">
+        <li>RLHF (PPO, DPO) alignment pipelines</li>
+        <li>LoRA, P-tuning, Adapter fine-tuning</li>
+        <li>Multi-modal (text + vision + speech)</li>
+        <li>Data curation with NeMo Curator</li>
+        <li>Retrieval-Augmented Generation (RAG) toolkit</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-on">🔗</div>
+        <div>
+          <div class="sc-title">SLURM · Workload Manager</div>
+          <div class="sc-provider">schedmd · open source</div>
+        </div>
+      </div>
+      <div class="sc-desc">HPC workload manager for scheduling GPU jobs across bare-metal clusters. Used in most research institutions and large-scale AI training environments.</div>
+      <ul class="sc-features">
+        <li>Priority-based job scheduling across GPU partitions</li>
+        <li>Resource accounting and fair-share scheduling</li>
+        <li>Preemption and backfill scheduling</li>
+        <li>Integration with MPI, Singularity containers</li>
+        <li>Job arrays for hyperparameter sweeps</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="services-sep">
+    <span class="tag tag-cloud">AWS · Azure</span>
+    <span class="services-sep-text">managed services below</span>
+  </div>
+  <div class="services-grid" id="cloud-services">
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-cloud">🌐</div>
+        <div>
+          <div class="sc-title">Amazon Bedrock</div>
+          <div class="sc-provider">aws · managed API</div>
+        </div>
+      </div>
+      <div class="sc-desc">Fully managed service for foundation models via API. No infrastructure management. Access Anthropic Claude, Meta Llama, Mistral, Stable Diffusion, and more.</div>
+      <ul class="sc-features">
+        <li>On-demand and provisioned throughput modes</li>
+        <li>Fine-tuning with your own data (PEFT/full)</li>
+        <li>Agents for multi-step task automation</li>
+        <li>Knowledge Bases for RAG (vector store managed)</li>
+        <li>Guardrails for content filtering and safety</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-cloud">🤖</div>
+        <div>
+          <div class="sc-title">Amazon SageMaker</div>
+          <div class="sc-provider">aws · fully managed</div>
+        </div>
+      </div>
+      <div class="sc-desc">End-to-end ML platform covering data preparation, training, and deployment. Used for custom model training and hosting on managed Nvidia GPU instances.</div>
+      <ul class="sc-features">
+        <li>Training Jobs: distributed on p4d/p5 instances</li>
+        <li>Real-time + Serverless + Async endpoints</li>
+        <li>JumpStart: 1-click deploy 600+ foundation models</li>
+        <li>Pipelines: ML CI/CD automation</li>
+        <li>Feature Store, Clarify (bias), Data Wrangler</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-cloud">✨</div>
+        <div>
+          <div class="sc-title">Azure OpenAI Service</div>
+          <div class="sc-provider">microsoft azure · managed</div>
+        </div>
+      </div>
+      <div class="sc-desc">Enterprise-grade access to OpenAI models (GPT-4o, GPT-4 Turbo, DALL-E 3, Whisper) within Azure's compliance and data residency boundaries.</div>
+      <ul class="sc-features">
+        <li>Private endpoints within your Azure VNet</li>
+        <li>Your data never used for OpenAI model training</li>
+        <li>Fine-tuning on GPT-3.5, GPT-4 models</li>
+        <li>On Your Data (RAG over Azure AI Search)</li>
+        <li>Content filters, RBAC, audit logs, PII redaction</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-cloud">🧠</div>
+        <div>
+          <div class="sc-title">Azure Machine Learning</div>
+          <div class="sc-provider">microsoft azure · managed</div>
+        </div>
+      </div>
+      <div class="sc-desc">Enterprise ML platform for training, deploying, and monitoring custom models on Azure GPU/CPU compute. Full MLOps lifecycle management.</div>
+      <ul class="sc-features">
+        <li>Managed compute clusters: NDv5 H100, NCv3 V100</li>
+        <li>Online Endpoints with traffic splitting</li>
+        <li>Prompt Flow: LLM application orchestration</li>
+        <li>Responsible AI dashboard (fairness, interpretability)</li>
+        <li>Integrated MLflow tracking + model registry</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-cloud">🔮</div>
+        <div>
+          <div class="sc-title">AWS Trainium2 &amp; Inferentia2</div>
+          <div class="sc-provider">aws · custom silicon</div>
+        </div>
+      </div>
+      <div class="sc-desc">AWS-designed ML accelerators optimized for training (Trainium2) and inference (Inferentia2). Lower cost-per-inference than comparable Nvidia GPU instances.</div>
+      <ul class="sc-features">
+        <li>Inferentia2: up to 40% lower cost vs GPU inference</li>
+        <li>Trainium2: 4× performance over Trainium1</li>
+        <li>NeuronSDK: compile PyTorch/TF to Neuron ISA</li>
+        <li>EKS integration via Neuron device plugin</li>
+        <li>Available via SageMaker + EC2 trn2/inf2 instances</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="sc-header">
+        <div class="sc-icon icon-cloud">🌀</div>
+        <div>
+          <div class="sc-title">Azure AI Foundry</div>
+          <div class="sc-provider">microsoft azure · managed</div>
+        </div>
+      </div>
+      <div class="sc-desc">Unified platform for AI application development. Access 1800+ models from the Azure model catalog (Meta, Mistral, Phi, Cohere) via API or fine-tuning.</div>
+      <ul class="sc-features">
+        <li>Model catalog: serverless API or managed compute</li>
+        <li>AI Search integration for RAG workflows</li>
+        <li>Azure AI Content Safety built-in</li>
+        <li>Evaluation framework for LLM quality metrics</li>
+        <li>Managed vector index (AI Search)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS STEPS -->
+<section class="how-it-works-section">
+  <div class="how-it-works-inner">
+    <div class="section-label">Step by Step</div>
+    <div class="section-title">How AI Inference Works</div>
+    <p class="section-desc">The exact sequence of operations when a user sends a prompt — compared across both deployment types.</p>
+
+    <div class="timeline-grid" id="timeline-grid">
+      <div>
+        <div class="timeline-header">
+          <span class="tag tag-on">On-Premises</span>
+        </div>
+        <div class="timeline" id="tl-on">
+          <div class="tl-item">
+            <div class="tl-num tl-num-on">01</div>
+            <div class="tl-body">
+              <div class="tl-title">Client sends HTTPS request</div>
+              <div class="tl-desc">User app calls your internal API endpoint. Nginx or HAProxy load balancer routes to one of N Triton/vLLM server pods running on the GPU cluster.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num tl-num-on">02</div>
+            <div class="tl-body">
+              <div class="tl-title">Tokenization &amp; preprocessing</div>
+              <div class="tl-desc">The inference server tokenizes the input text using the model's vocabulary. Tokens are padded/truncated to context window. Attention masks computed.</div>
+              <div class="tl-code">tokens = tokenizer.encode(prompt)<br>input_ids = torch.tensor([tokens]).cuda()</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num tl-num-on">03</div>
+            <div class="tl-body">
+              <div class="tl-title">GPU kernel dispatch</div>
+              <div class="tl-desc">CUDA kernels are launched for each transformer layer. Attention computation (Q×K^T / √d_k × V) executes on H100 Tensor Cores at BF16 precision. NVLink transfers KV caches between GPUs for tensor parallelism.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num tl-num-on">04</div>
+            <div class="tl-body">
+              <div class="tl-title">Autoregressive decoding</div>
+              <div class="tl-desc">Model generates one token per forward pass. vLLM uses PagedAttention to manage KV cache in 16-token blocks, preventing fragmentation. Continuous batching groups concurrent requests.</div>
+              <div class="tl-code">for step in range(max_new_tokens):<br>&nbsp;&nbsp;logits = model(input_ids, kv_cache)<br>&nbsp;&nbsp;next_tok = sample(logits, temperature)<br>&nbsp;&nbsp;yield next_tok</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num tl-num-on">05</div>
+            <div class="tl-body">
+              <div class="tl-title">Response streaming &amp; metrics</div>
+              <div class="tl-desc">Generated tokens are detokenized and streamed back via Server-Sent Events. GPU utilization, VRAM, and request latency are exported to Prometheus / Grafana dashboards.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="timeline-header">
+          <span class="tag tag-cloud">AWS · Azure</span>
+        </div>
+        <div class="timeline" id="tl-cloud">
+          <div class="tl-item">
+            <div class="tl-num tl-num-cloud">01</div>
+            <div class="tl-body">
+              <div class="tl-title">Signed API call via HTTPS</div>
+              <div class="tl-desc">Client app makes a signed request (AWS SigV4 or Azure Entra token) to the managed endpoint URL. AWS API Gateway or Azure APIM handles SSL termination and throttling.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num tl-num-cloud">02</div>
+            <div class="tl-body">
+              <div class="tl-title">IAM authorization &amp; routing</div>
+              <div class="tl-desc">AWS IAM or Azure RBAC validates permissions. Request is routed to the correct model endpoint. Rate limits checked against provisioned throughput quotas. Request logged to CloudTrail / Activity Log.</div>
+              <div class="tl-code">Authorization: Bearer {azure_token}<br>x-api-key: {bedrock_api_key}<br>Content-Type: application/json</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num tl-num-cloud">03</div>
+            <div class="tl-body">
+              <div class="tl-title">Model execution on managed fleet</div>
+              <div class="tl-desc">The cloud provider runs inference on their fleet of Nvidia H100s (p5 instances) or custom silicon (Inferentia2 / Maia). You never interact with the underlying hardware. All scaling is automatic.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num tl-num-cloud">04</div>
+            <div class="tl-body">
+              <div class="tl-title">Content safety &amp; guardrails</div>
+              <div class="tl-desc">AWS Bedrock Guardrails or Azure AI Content Safety scans both the input and output for harmful content, PII, and policy violations before returning to the client.</div>
+              <div class="tl-code">guardrail_config = {<br>&nbsp;&nbsp;"blockedInputsMessaging": "...",<br>&nbsp;&nbsp;"contentPolicyConfig": {...},<br>&nbsp;&nbsp;"piiEntityTypes": ["EMAIL","SSN"]<br>}</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num tl-num-cloud">05</div>
+            <div class="tl-body">
+              <div class="tl-title">Streaming response &amp; observability</div>
+              <div class="tl-desc">Tokens stream back via HTTPS chunked transfer. Latency, token counts, and cost tracked in CloudWatch / Azure Monitor. Billing calculated per input+output token, logged to Cost Explorer.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section class="section" id="comparison">
+  <div class="section-label">Detailed Comparison</div>
+  <div class="section-title">On-Prem vs Cloud: Side by Side</div>
+  <p class="section-desc">A structured breakdown across the dimensions that matter most for AI infrastructure decisions.</p>
+
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th style="width:18%">Dimension</th>
+            <th style="width:40%">🖥 On-Premises · Nvidia GPU</th>
+            <th style="width:40%">☁ AWS / Azure</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-category">Hardware</td>
+            <td class="td-on">Nvidia H100 SXM5, A100 80GB, RTX 4090. NVLink fabric (900GB/s). InfiniBand 400GbE. You own the metal. <span class="badge badge-win">Full control</span></td>
+            <td class="td-cloud">p5.48xlarge (8×H100), NDv5 H100 (8 GPU). AWS Trainium2 / Inferentia2, Azure Maia 100 (custom silicon). <span class="badge badge-mid">Abstracted</span></td>
+          </tr>
+          <tr>
+            <td class="td-category">Cost model</td>
+            <td class="td-on">CapEx: $25K–$40K per H100 GPU. Electricity ~$1,000–2,000/month per server. Amortized over 3–5 years. Lower per-token cost at scale. <span class="badge badge-win">Best at scale</span></td>
+            <td class="td-cloud">OpEx: p5.48xlarge ~$98/hr on-demand, ~$32/hr 1yr reserved. Bedrock: $0.003–$0.015/1K tokens. No upfront cost. <span class="badge badge-win">Best to start</span></td>
+          </tr>
+          <tr>
+            <td class="td-category">Latency</td>
+            <td class="td-on">~2–8ms first token (no network hop). Direct PCIe/NVLink access. Predictable, no noisy-neighbor effects. <span class="badge badge-win">Lowest latency</span></td>
+            <td class="td-cloud">10–150ms first token (network + orchestration). Regional endpoints reduce latency. Shared infrastructure may cause variability. <span class="badge badge-mid">Variable</span></td>
+          </tr>
+          <tr>
+            <td class="td-category">Throughput</td>
+            <td class="td-on">Limited to owned GPU count. Scale by buying more hardware. Cold provisioning takes weeks. <span class="badge badge-mid">Fixed ceiling</span></td>
+            <td class="td-cloud">Elastic: auto-scale from 0 to 1000s of instances in minutes. Spot/preemptible instances for batch workloads at 60–90% discount. <span class="badge badge-win">Unlimited scale</span></td>
+          </tr>
+          <tr>
+            <td class="td-category">Data privacy</td>
+            <td class="td-on">Data never leaves your network. Full GDPR, HIPAA, SOC2 compliance by design. No vendor data retention risk. <span class="badge badge-win">Maximum privacy</span></td>
+            <td class="td-cloud">Azure OpenAI: data not used for training. VNet private endpoints. AWS: data encrypted in transit/at rest. Review DPA and BAAs. <span class="badge badge-mid">Managed risk</span></td>
+          </tr>
+          <tr>
+            <td class="td-category">Model flexibility</td>
+            <td class="td-on">Any open-source model (Llama 3, Mistral, Falcon, Qwen). Full fine-tuning freedom. Custom architectures. Pre/post processing pipelines. <span class="badge badge-win">Full flexibility</span></td>
+            <td class="td-cloud">Bedrock: Claude, Llama 3, Titan, Mistral, Stable Diffusion. SageMaker: any framework. Azure: OpenAI + 1800+ catalog models. <span class="badge badge-mid">Curated catalog</span></td>
+          </tr>
+          <tr>
+            <td class="td-category">Ops complexity</td>
+            <td class="td-on">High: manage drivers, CUDA, containers, networking, storage, cooling, power, security patches, hardware failures. Need ML infra team. <span class="badge badge-low">High burden</span></td>
+            <td class="td-cloud">Low: fully managed control plane, SLA-backed uptime, automatic security patches, no hardware management. Small team can operate. <span class="badge badge-win">Low burden</span></td>
+          </tr>
+          <tr>
+            <td class="td-category">Training support</td>
+            <td class="td-on">DeepSpeed ZeRO, Megatron-LM, FSDP, Horovod. NCCL for multi-GPU. Full SLURM job control. Custom checkpointing. <span class="badge badge-win">Full training</span></td>
+            <td class="td-cloud">SageMaker Training Jobs, Azure ML Training. Distributed training with SageMaker Data Parallel / Model Parallel. Managed spot training with auto-checkpointing. <span class="badge badge-win">Managed training</span></td>
+          </tr>
+          <tr>
+            <td class="td-category">Observability</td>
+            <td class="td-on">Prometheus + Grafana, DCGM Exporter (GPU), MLflow / W&B, Jaeger tracing, ELK stack. Full custom dashboards. <span class="badge badge-win">Fully custom</span></td>
+            <td class="td-cloud">CloudWatch, Azure Monitor, built-in dashboards for endpoints, tokens/sec, error rates. Cost Explorer for spend tracking. SageMaker Debugger. <span class="badge badge-win">Built-in</span></td>
+          </tr>
+          <tr>
+            <td class="td-category">Security</td>
+            <td class="td-on">Air-gapped option, HSM integration, custom PKI, full network segmentation. You control every layer of the security stack. <span class="badge badge-win">Maximum control</span></td>
+            <td class="td-cloud">AWS KMS / Azure Key Vault, VPC / VNet isolation, private endpoints, IAM granular policies, CloudTrail audit, Defender for Cloud. <span class="badge badge-win">Enterprise ready</span></td>
+          </tr>
+          <tr>
+            <td class="td-category">Time to first call</td>
+            <td class="td-on">Weeks to months: hardware procurement, rack, cable, configure, software stack, model download. <span class="badge badge-low">Slow</span></td>
+            <td class="td-cloud">Minutes: create API key, call Bedrock / Azure OpenAI endpoint. SageMaker JumpStart: 1-click deploy. <span class="badge badge-win">Instant</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- KEY METRICS -->
+<section class="metrics-section">
+  <div class="metrics-inner">
+    <div class="section-label">Performance Reference</div>
+    <div class="section-title">Key Metrics at a Glance</div>
+    <p class="section-desc">Representative benchmark numbers for typical AI workloads on each platform.</p>
+    <div class="metrics-grid" id="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">H100 · FP8 Throughput</div>
+        <div class="metric-val" style="color:var(--accent-green)">3,958</div>
+        <div class="metric-sub">TFLOPS · Nvidia H100 SXM5</div>
+        <div class="metric-bar"><div class="metric-fill" style="background:var(--accent-green);width:95%"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">vLLM Throughput vs HF</div>
+        <div class="metric-val" style="color:var(--accent-green)">24×</div>
+        <div class="metric-sub">higher tok/sec vs naive serving</div>
+        <div class="metric-bar"><div class="metric-fill" style="background:var(--accent-green);width:90%"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">NVLink 4.0 Bandwidth</div>
+        <div class="metric-val" style="color:var(--accent-blue)">900</div>
+        <div class="metric-sub">GB/s bidirectional · H100</div>
+        <div class="metric-bar"><div class="metric-fill" style="background:var(--accent-blue);width:88%"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">AWS Bedrock Latency</div>
+        <div class="metric-val" style="color:var(--accent-purple)">~50ms</div>
+        <div class="metric-sub">Avg first-token latency · Claude</div>
+        <div class="metric-bar"><div class="metric-fill" style="background:var(--accent-purple);width:55%"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">p5.48xlarge GPU Memory</div>
+        <div class="metric-val" style="color:var(--accent-purple)">640</div>
+        <div class="metric-sub">GB total HBM3 (8× H100)</div>
+        <div class="metric-bar"><div class="metric-fill" style="background:var(--accent-purple);width:82%"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Inferentia2 vs GPU Cost</div>
+        <div class="metric-val" style="color:var(--accent-orange)">-40%</div>
+        <div class="metric-sub">lower inference cost per token</div>
+        <div class="metric-bar"><div class="metric-fill" style="background:var(--accent-orange);width:60%"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">DeepSpeed ZeRO-3 Speedup</div>
+        <div class="metric-val" style="color:var(--accent-green)">4–8×</div>
+        <div class="metric-sub">vs single-GPU baseline training</div>
+        <div class="metric-bar"><div class="metric-fill" style="background:var(--accent-green);width:78%"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Azure OpenAI TPM</div>
+        <div class="metric-val" style="color:var(--accent-blue)">1M</div>
+        <div class="metric-sub">Max tokens/min · enterprise tier</div>
+        <div class="metric-bar"><div class="metric-fill" style="background:var(--accent-blue);width:85%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHEN TO CHOOSE -->
+<section class="section" id="decision">
+  <div class="section-label">Decision Guide</div>
+  <div class="section-title">When to Choose Each Path</div>
+  <p class="section-desc">Practical guidance for common scenarios based on your organization's requirements.</p>
+
+  <div class="decision-grid">
+    <div class="decision-card">
+      <div class="dc-head">
+        <div class="dc-icon-wrap" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25)">🖥</div>
+        <div>
+          <div class="dc-title">Choose On-Premises When…</div>
+        </div>
+      </div>
+      <ul class="use-case-list">
+        <li><span class="uc-icon">🔒</span>You handle regulated data (healthcare, finance, defense) that cannot leave your network — air-gap is required</li>
+        <li><span class="uc-icon">💸</span>You run sustained, high-throughput AI workloads 24/7 — at scale, owned hardware beats cloud OpEx in 12–18 months</li>
+        <li><span class="uc-icon">⚡</span>Your application requires sub-10ms inference latency and direct GPU access without network hops</li>
+        <li><span class="uc-icon">🔬</span>You're doing LLM training/fine-tuning research and need full control over the training loop, checkpoints, and CUDA kernels</li>
+        <li><span class="uc-icon">🏗</span>You have an existing ML/HPC team with infra expertise and a procurement relationship with hardware vendors</li>
+        <li><span class="uc-icon">🎛</span>You need to run custom or proprietary model architectures that aren't available in any cloud catalog</li>
+        <li><span class="uc-icon">🌐</span>You operate in a jurisdiction where cloud services from US providers are restricted or prohibited</li>
+      </ul>
+    </div>
+    <div class="decision-card">
+      <div class="dc-head">
+        <div class="dc-icon-wrap" style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25)">☁</div>
+        <div>
+          <div class="dc-title">Choose Cloud (AWS/Azure) When…</div>
+        </div>
+      </div>
+      <ul class="use-case-list">
+        <li><span class="uc-icon">🚀</span>You need to prototype or launch an AI product in days or weeks — no hardware procurement delay</li>
+        <li><span class="uc-icon">📈</span>Your workload is spiky or unpredictable — scale to zero at night, burst to 100s of GPUs during peak hours</li>
+        <li><span class="uc-icon">👤</span>Your team is small without dedicated ML infra engineers — managed services eliminate ops overhead</li>
+        <li><span class="uc-icon">💰</span>You want OpEx over CapEx — no upfront hardware investment, pay only for what you use</li>
+        <li><span class="uc-icon">🤝</span>You want access to frontier models (GPT-4o, Claude 3.5) without building training infrastructure yourself</li>
+        <li><span class="uc-icon">🌍</span>You need global deployment across multiple regions with built-in redundancy and SLAs</li>
+        <li><span class="uc-icon">🔧</span>You want managed RAG, guardrails, agents, and vector search without building the supporting infrastructure</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- HYBRID NOTE -->
+  <div class="hybrid-note">
+    <div class="hybrid-note-icon">🔀</div>
+    <div>
+      <div class="hybrid-note-title">The Hybrid Approach (Most Common at Scale)</div>
+      <div class="hybrid-note-desc">Most mature AI organizations run both: on-premises Nvidia clusters for sustained training workloads and proprietary model hosting, combined with cloud APIs for variable inference load, managed RAG, and accessing frontier models. AWS Outposts and Azure Arc extend cloud management planes to on-premises hardware, enabling a unified control plane across both environments.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">AI<span>Infra</span> Guide</div>
+  <div class="footer-desc">Architecture overview for On-Premises Nvidia GPU clusters vs AWS / Azure managed AI services.</div>
+  <div class="footer-note">Data reflects publicly available specifications and pricing as of 2026 · For reference only</div>
+  <p class="footer-copyright">&copy; 2026 <a href="https://prateekdutta2001.github.io/PrateekDutta.in/" target="_blank" rel="noopener noreferrer">PRATEEK DUTTA</a>. This work is licensed under a Creative Commons Attribution 4.0 International License (CC BY 4.0).</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
